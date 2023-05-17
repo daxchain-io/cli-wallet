@@ -33,13 +33,8 @@ jobs:
           git push
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+        run: |
+          VERSION=${GITHUB_REF/refs\/tags\//}
+          RESPONSE=$(curl --data "{\"tag_name\": \"$VERSION\",\"target_commitish\": \"master\",\"name\": \"v$VERSION\",\"body\": \"Release of version $VERSION\",\"draft\": false,\"prerelease\": false}" https://api.github.com/repos/daxchain-io/homebrew-tap/releases?access_token=${{ secrets.GITHUB_TOKEN }})
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: New version ${{ github.ref }}
-          draft: false
-          prerelease: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

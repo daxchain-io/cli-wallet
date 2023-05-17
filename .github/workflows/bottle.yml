@@ -1,0 +1,37 @@
+name: Bottle
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  bottle:
+    runs-on: macos-latest
+
+    steps:
+      - name: Install Homebrew
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo "/usr/local/bin/brew" >> $GITHUB_PATH
+
+      - name: Checkout Formula Repository
+        uses: actions/checkout@v2
+        with:
+          repository: daxchain-io/homebrew-tap
+          path: homebrew-tap
+
+      - name: Build and Bottle
+        run: |
+          brew install --build-bottle ./homebrew-tap/cli-wallet.rb
+          brew bottle --json --root-url=https://github.com/daxchain-io/homebrew-tap/releases/download/${{ github.ref }} ./homebrew-tap/cli-wallet.rb
+
+      - name: Upload Bottle
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./cli-wallet-0.1.0.catalina.bottle.tar.gz
+          asset_name: cli-wallet-0.1.0.catalina.bottle.tar.gz
+          asset_content_type: application/gzip

@@ -13,25 +13,24 @@ jobs:
       - name: Install Homebrew
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          echo "/usr/local/bin/brew" >> $GITHUB_PATH
 
-      - name: Checkout Formula Repository
-        uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v3
         with:
-          repository: daxchain-io/homebrew-tap
-          path: homebrew-tap
+          fetch-depth: 0
 
-      - name: Build and Bottle
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Build bottle
         run: |
-          brew install --build-bottle ./homebrew-tap/cli-wallet.rb
-          brew bottle --json --root-url=https://github.com/daxchain-io/homebrew-tap/releases/download/${{ github.ref }} ./homebrew-tap/cli-wallet.rb
+          brew install --build-bottle daxchain-io/homebrew-tap/cli-wallet
+          brew bottle daxchain-io/homebrew-tap/cli-wallet
 
-    #   - name: Upload Bottle
-    #     uses: actions/upload-release-asset@v1
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     with:
-    #       upload_url: ${{ steps.create_release.outputs.upload_url }}
-    #       asset_path: ./cli-wallet-0.1.0.catalina.bottle.tar.gz
-    #       asset_name: cli-wallet-0.1.0.catalina.bottle.tar.gz
-    #       asset_content_type: application/gzip
+      - name: Upload bottle
+        uses: actions/upload-artifact@v2
+        with:
+          name: cli-wallet-bottle
+          path: "*.bottle.*"

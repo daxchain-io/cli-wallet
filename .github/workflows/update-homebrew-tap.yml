@@ -35,6 +35,6 @@ jobs:
       - name: Create Release
         run: |
           VERSION=${GITHUB_REF/refs\/tags\//}
-          RESPONSE=$(curl --data "{\"tag_name\": \"$VERSION\",\"target_commitish\": \"master\",\"name\": \"v$VERSION\",\"body\": \"Release of version $VERSION\",\"draft\": false,\"prerelease\": false}" https://api.github.com/repos/daxchain-io/homebrew-tap/releases?access_token=${{ secrets.PERSONAL_ACCESS_TOKEN }})
+          RESPONSE=$(curl --data "{\"tag_name\": \"$VERSION\",\"target_commitish\": \"main\",\"name\": \"v$VERSION\",\"body\": \"Release of version $VERSION\",\"draft\": false,\"prerelease\": false}" https://api.github.com/repos/daxchain-io/homebrew-tap/releases?access_token=${{ secrets.PERSONAL_ACCESS_TOKEN }})
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

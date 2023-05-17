@@ -24,7 +24,7 @@ jobs:
       - name: Build and Bottle
         run: |
           brew install --build-bottle ./homebrew-tap/cli-wallet.rb
-    #       brew bottle --json --root-url=https://github.com/daxchain-io/homebrew-tap/releases/download/${{ github.ref }} ./homebrew-tap/Formula/cli-wallet.rb
+          brew bottle --json --root-url=https://github.com/daxchain-io/homebrew-tap/releases/download/${{ github.ref }} ./homebrew-tap/Formula/cli-wallet.rb
 
     #   - name: Upload Bottle
     #     uses: actions/upload-release-asset@v1
